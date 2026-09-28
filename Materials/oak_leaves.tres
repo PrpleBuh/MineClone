@@ -1,0 +1,13 @@
+[gd_resource type="StandardMaterial3D" format=3 uid="uid://cp3y4tcftlde0"]
+
+[ext_resource type="Texture2D" uid="uid://dvcd28o8t8wkk" path="res://Materials/leaves.png" id="1_o1qmd"]
+
+[resource]
+transparency = 2
+alpha_scissor_threshold = 0.5
+alpha_antialiasing_mode = 0
+albedo_color = Color(0.0936, 0.52, 0.12202665, 1)
+albedo_texture = ExtResource("1_o1qmd")
+metallic_specular = 0.0
+ao_enabled = true
+texture_filter = 2

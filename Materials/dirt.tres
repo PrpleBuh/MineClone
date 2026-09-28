@@ -1,4 +1,9 @@
 [gd_resource type="StandardMaterial3D" format=3 uid="uid://d2vaoucnyc5lo"]
 
+[ext_resource type="Texture2D" uid="uid://bwq2fu32qoudo" path="res://Materials/dirt.png" id="1_1w51v"]
+
 [resource]
-albedo_color = Color(0.48262656, 0.29970145, 0.08051845, 1)
+albedo_texture = ExtResource("1_1w51v")
+metallic_specular = 0.0
+ao_enabled = true
+texture_filter = 2

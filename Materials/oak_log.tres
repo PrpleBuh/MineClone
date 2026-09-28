@@ -1,0 +1,10 @@
+[gd_resource type="StandardMaterial3D" format=3 uid="uid://biuf64cbmyghe"]
+
+[ext_resource type="Texture2D" uid="uid://cjq8owoukc2ym" path="res://Materials/log.png" id="1_kmqrn"]
+
+[resource]
+albedo_color = Color(0.49, 0.32928002, 0.0882, 1)
+albedo_texture = ExtResource("1_kmqrn")
+metallic_specular = 0.0
+ao_enabled = true
+texture_filter = 2

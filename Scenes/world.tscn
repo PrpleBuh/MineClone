@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://b6df68em7fngl"]
 
 [ext_resource type="PackedScene" uid="uid://0e166jd07f15" path="res://Scenes/player.tscn" id="1_f3sb7"]
-[ext_resource type="Material" uid="uid://d2vaoucnyc5lo" path="res://Materials/dirt.tres" id="1_fj7yv"]
+[ext_resource type="Script" uid="uid://crny8nxwyl2em" path="res://Scripts/chunk_manager.gd" id="2_go701"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_gv5m4"]
 sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
@@ -13,6 +13,8 @@ sky_material = SubResource("ProceduralSkyMaterial_gv5m4")
 [sub_resource type="Environment" id="Environment_fj7yv"]
 background_mode = 2
 sky = SubResource("Sky_f3sb7")
+ambient_light_source = 3
+ambient_light_color = Color(0.3203021, 0.3203021, 0.3203021, 1)
 ssao_enabled = true
 sdfgi_enabled = true
 glow_enabled = true
@@ -20,9 +22,6 @@ volumetric_fog_enabled = true
 volumetric_fog_density = 0.0099
 volumetric_fog_anisotropy = 0.9
 volumetric_fog_detail_spread = 0.588438
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_u0hbs"]
-albedo_color = Color(0.502672, 0.55688065, 0, 1)
 
 [node name="World" type="Node3D" unique_id=2108614]
 
@@ -36,34 +35,9 @@ light_color = Color(0.99215686, 0.9843137, 0.5647059, 1)
 shadow_enabled = true
 directional_shadow_mode = 1
 
-[node name="ground" type="CSGBox3D" parent="." unique_id=259842459]
-use_collision = true
-size = Vector3(100, 1, 100)
-material = SubResource("StandardMaterial3D_u0hbs")
-
-[node name="dirt" type="CSGBox3D" parent="ground" unique_id=445545101]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.0178437, 1.0005987, 0.011380076)
-material = ExtResource("1_fj7yv")
-
-[node name="dirt2" type="CSGBox3D" parent="ground" unique_id=1862384703]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.0178437, 2.0005987, 0.011380076)
-material = ExtResource("1_fj7yv")
-
-[node name="dirt3" type="CSGBox3D" parent="ground" unique_id=91478207]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.0178437, 3.0005987, 1.0113801)
-material = ExtResource("1_fj7yv")
-
-[node name="dirt4" type="CSGBox3D" parent="ground" unique_id=2006623925]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.017843723, 2.0005987, 1.0113801)
-material = ExtResource("1_fj7yv")
-
-[node name="dirt5" type="CSGBox3D" parent="ground" unique_id=846128490]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.017843723, 3.0005987, 0.011380076)
-material = ExtResource("1_fj7yv")
-
-[node name="dirt6" type="CSGBox3D" parent="ground" unique_id=931960392]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.0178437, 4.000599, -1.9886199)
-material = ExtResource("1_fj7yv")
-
 [node name="player" parent="." unique_id=1407032173 instance=ExtResource("1_f3sb7")]
-transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, -3, 0.4958613, -2)
+transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, 0, 64, 0)
+
+[node name="ChunkManager" type="Node3D" parent="." unique_id=1473272611]
+transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, 0, 0, 0)
+script = ExtResource("2_go701")
