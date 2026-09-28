@@ -1,6 +1,8 @@
 [gd_scene format=3 uid="uid://0e166jd07f15"]
 
 [ext_resource type="Script" uid="uid://xaeh07jjfyy8" path="res://Scripts/player.gd" id="1_4flbx"]
+[ext_resource type="Script" uid="uid://cl2uk6ow0uj7y" path="res://Scripts/ui.gd" id="2_6t5aa"]
+[ext_resource type="Texture2D" uid="uid://bfdbpqcu6c4tq" path="res://Materials/pinventory.png" id="2_cvnsp"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_v0iea"]
 size = Vector3(0.5, 2, 0.5)
@@ -81,3 +83,36 @@ surface_material_override/0 = SubResource("StandardMaterial3D_8p5rl")
 [node name="Camera3D" type="Camera3D" parent="." unique_id=889797356]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.808, -0.24948716)
 cull_mask = 1015807
+
+[node name="UI" type="Control" parent="." unique_id=139306223]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 1280.0
+offset_bottom = 720.0
+script = ExtResource("2_6t5aa")
+
+[node name="Inventory" type="CenterContainer" parent="UI" unique_id=1719398640]
+visible = false
+layout_mode = 0
+offset_right = 1280.0
+offset_bottom = 720.0
+
+[node name="Panel" type="Panel" parent="UI/Inventory" unique_id=1625396037]
+custom_minimum_size = Vector2(1280, 720)
+layout_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="UI/Inventory" unique_id=819016883]
+texture_filter = 1
+custom_minimum_size = Vector2(400, 0)
+layout_mode = 2
+texture = ExtResource("2_cvnsp")
+expand_mode = 5
+stretch_mode = 5
+
+[node name="CenterContainer" type="CenterContainer" parent="UI" unique_id=299318825]
+layout_mode = 0
+offset_right = 1280.0
+offset_bottom = 720.0
+
+[node name="Crosshair" type="Control" parent="UI/CenterContainer" unique_id=1037110786]
+layout_mode = 2

@@ -56,6 +56,7 @@ var dirty: bool = false
 var loaded: bool = false
 
 var mesh_renderer: MeshInstance3D
+var collider: CollisionShape3D
 
 var block_data: Array[Block.Type] = []
 var block_cull_data: Array[int] = []
@@ -73,13 +74,14 @@ func set_chunk_manager(manager: ChunkManager) -> void:
 func set_chunk_pos(pos: Vector2i) -> void:
 	chunk_pos = pos
 	global_position = chunk_world_pos()
+	var clr: float = 1.0 if abs(chunk_pos.x) % 2 == abs(chunk_pos.y) % 2 else 0.6
+	collider.debug_color = Color(clr, clr, clr)
 
 func chunk_world_pos() -> Vector3:
-	return Vector3(chunk_pos.x * CHUNK_WIDTH, 0, chunk_pos.y * CHUNK_WIDTH)
+	return Vector3(chunk_pos.x, 0, chunk_pos.y) * CHUNK_WIDTH
 
 func get_noise(pos: Vector2i) -> float:
-	var world_pos = chunk_world_pos()
-	return (noise.get_noise_2d(pos.x - world_pos.x, pos.y - world_pos.z) + 1) / 2
+	return (noise.get_noise_2d(int(pos.x + chunk_world_pos().x), int(pos.y + chunk_world_pos().z)) + 1) / 2
 
 func generate() -> void:
 	var start = Time.get_ticks_usec()
@@ -112,7 +114,11 @@ func _ready() -> void:
 	block_cull_data.resize(CHUNK_DATA_LEN)
 	block_cull_data.fill(0xffff)
 	mesh_renderer = MeshInstance3D.new()
+	var body = StaticBody3D.new()
+	collider = CollisionShape3D.new()
 	add_child(mesh_renderer)
+	add_child(body)
+	body.add_child(collider)
 
 func __fill_no_bounds_checking(x1: int, y1: int, z1: int, x2: int, y2: int, z2: int, block: Block.Type) -> void:
 	for x in range(x1, x2 + 1):
@@ -124,42 +130,44 @@ func __set_block_no_bounds_checking(x: int, y: int, z: int, block: Block.Type) -
 	var idx = __xyz_to_idx(x, y, z)
 	if block_data[idx] == block: return
 	
-	if Block.from_id(block_data[idx]).transparent != Block.from_id(block).transparent:
-		__recalc_cull_info(x, y, z, block)
+	__recalc_cull_info(x, y, z, block)
 	
 	block_data[idx] = block
-	dirty = true
 
-func __set_cull_flag(x: int, y: int, z: int, side_flag: int, value: bool) -> void:
+func __set_cull_flag(x: int, y: int, z: int, side: int, value: bool) -> void:
 	var chunk = self
 	
 	if x < 0:
-		chunk = chunk_manager.get_chunk_if_loaded(chunk_pos + Vector2i(1, 0))
+		chunk = chunk_manager.get_chunk_if_loaded(chunk_pos + Vector2i(-1, 0))
 		x = CHUNK_WIDTH + x
 	if x >= CHUNK_WIDTH:
-		chunk = chunk_manager.get_chunk_if_loaded(chunk_pos + Vector2i(-1, 0))
+		chunk = chunk_manager.get_chunk_if_loaded(chunk_pos + Vector2i(1, 0))
 		x = x - CHUNK_WIDTH
 	if z < 0:
-		chunk = chunk_manager.get_chunk_if_loaded(chunk_pos + Vector2i(0, 1))
+		chunk = chunk_manager.get_chunk_if_loaded(chunk_pos + Vector2i(0, -1))
 		z = CHUNK_WIDTH + z
 	if z >= CHUNK_WIDTH:
-		chunk = chunk_manager.get_chunk_if_loaded(chunk_pos + Vector2i(0, -1))
+		chunk = chunk_manager.get_chunk_if_loaded(chunk_pos + Vector2i(0, 1))
 		z = z - CHUNK_WIDTH
 	
 	if chunk == null or y < 0 or y >= CHUNK_HEIGHT: return
 	
 	var idx = __xyz_to_idx(x, y, z)
 	
-	chunk.block_cull_data[idx] = chunk.block_cull_data[idx] & (side_flag if value else ~side_flag)
+	if value:
+		chunk.block_cull_data[idx] |= (1 << side)
+	else:
+		chunk.block_cull_data[idx] &= ~(1 << side)
+	chunk.dirty = true
 
 func __recalc_cull_info(x: int, y: int, z: int, block: Block.Type) -> void:
 	var info = Block.from_id(block)
-	__set_cull_flag(x - 1, y, z, 1, info.transparent)
-	__set_cull_flag(x, y, z - 1, 2, info.transparent)
-	__set_cull_flag(x + 1, y, z, 4, info.transparent)
-	__set_cull_flag(x, y, z + 1, 8, info.transparent)
-	__set_cull_flag(x, y - 1, z, 16, info.transparent)
-	__set_cull_flag(x, y + 1, z, 32, info.transparent)
+	__set_cull_flag(x - 1, y, z, 0, info.transparent)
+	__set_cull_flag(x, y, z - 1, 1, info.transparent)
+	__set_cull_flag(x + 1, y, z, 2, info.transparent)
+	__set_cull_flag(x, y, z + 1, 3, info.transparent)
+	__set_cull_flag(x, y - 1, z, 4, info.transparent)
+	__set_cull_flag(x, y + 1, z, 5, info.transparent)
 	
 
 func set_block(x: int, y: int, z: int, block: Block.Type) -> void:
@@ -168,15 +176,21 @@ func set_block(x: int, y: int, z: int, block: Block.Type) -> void:
 	if x < 0:
 		chunk = chunk_manager.get_chunk_if_loaded(chunk_pos + Vector2i(1, 0))
 		x = CHUNK_WIDTH + x
+	
 	if x >= CHUNK_WIDTH:
 		chunk = chunk_manager.get_chunk_if_loaded(chunk_pos + Vector2i(-1, 0))
 		x = x - CHUNK_WIDTH
+	
 	if z < 0:
 		chunk = chunk_manager.get_chunk_if_loaded(chunk_pos + Vector2i(0, 1))
 		z = CHUNK_WIDTH + z
+	
 	if z >= CHUNK_WIDTH:
 		chunk = chunk_manager.get_chunk_if_loaded(chunk_pos + Vector2i(0, -1))
 		z = z - CHUNK_WIDTH
+	
+	z = clampi(z, 0, CHUNK_WIDTH - 1)
+	x = clampi(x, 0, CHUNK_WIDTH - 1)
 	
 	if chunk == null or y < 0 or y >= CHUNK_HEIGHT: return
 	
@@ -291,6 +305,8 @@ func rebuild_mesh() -> void:
 		
 		mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arrays)
 		mesh.surface_set_material(mesh.get_surface_count() - 1, Block.from_id(i).material)
+
+	collider.set_deferred_thread_group("shape", mesh.create_trimesh_shape())
 	
 	print("Chunk Mesh Creation took ", Time.get_ticks_usec() - start_generate, "us")
 	
