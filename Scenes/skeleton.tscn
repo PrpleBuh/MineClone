@@ -23,10 +23,10 @@ size = Vector3(0.5, 0.1, 0.29941407)
 size = Vector3(0.5, 0.35898438, 0.25)
 
 [sub_resource type="BoxMesh" id="BoxMesh_lw4xn"]
-size = Vector3(0.23671874, 0.2, 0.1)
+size = Vector3(0.23671874, 0.15578613, 0.1)
 
-[sub_resource type="BoxMesh" id="BoxMesh_clg8n"]
-size = Vector3(0.23671874, 0.2, 0.1)
+[sub_resource type="BoxMesh" id="BoxMesh_sfdtf"]
+size = Vector3(0.23671874, 0.15578613, 0.1)
 
 [sub_resource type="BoxMesh" id="BoxMesh_v8sxu"]
 size = Vector3(0.5, 0.1, 0.25)
@@ -65,7 +65,7 @@ mesh = SubResource("BoxMesh_v0iea")
 surface_material_override/0 = SubResource("StandardMaterial3D_8p5rl")
 
 [node name="teeth" type="MeshInstance3D" parent="sbody/neck/head" unique_id=934440643]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.25, 0.2)
+transform = Transform3D(1, -4.825496e-09, 1.332836e-10, 4.8254964e-09, 0.9984755, -0.05519725, 1.332765e-10, 0.05519725, 0.9984755, 3.4430236e-10, -0.24309635, 0.1960617)
 layers = 32769
 mesh = SubResource("BoxMesh_vd5x3")
 surface_material_override/0 = SubResource("StandardMaterial3D_8p5rl")
@@ -89,15 +89,15 @@ mesh = SubResource("BoxMesh_q1wii")
 surface_material_override/0 = SubResource("StandardMaterial3D_8p5rl")
 
 [node name="ribs_l" type="MeshInstance3D" parent="sbody/chest" unique_id=941195780]
-transform = Transform3D(0.9, 0, 0, 0, 0.9, 0, 0, 0, 0.9, 0.11847658, -0.21550798, 0.0675)
+transform = Transform3D(0.90000004, -6.8129533e-09, 2.9552183e-10, 6.8129533e-09, 0.8966197, -0.07793112, 2.9553604e-10, 0.07793112, 0.8966197, 0.11847658, -0.24237657, 0.07298966)
 layers = 32769
 mesh = SubResource("BoxMesh_lw4xn")
 surface_material_override/0 = SubResource("StandardMaterial3D_8p5rl")
 
-[node name="ribs_r" type="MeshInstance3D" parent="sbody/chest" unique_id=175073939]
-transform = Transform3D(0.9, 0, 0, 0, 0.9, 0, 0, 0, 0.9, -0.118, -0.21550786, 0.06752246)
+[node name="ribs_r" type="MeshInstance3D" parent="sbody/chest" unique_id=1518549218]
+transform = Transform3D(0.90000004, -6.8129533e-09, 2.9552183e-10, 6.8129533e-09, 0.8966197, -0.07793112, 2.9553604e-10, 0.07793112, 0.8966197, -0.11799999, -0.24237859, 0.073464215)
 layers = 32769
-mesh = SubResource("BoxMesh_clg8n")
+mesh = SubResource("BoxMesh_sfdtf")
 surface_material_override/0 = SubResource("StandardMaterial3D_8p5rl")
 
 [node name="pelvis" type="MeshInstance3D" parent="sbody/chest" unique_id=249399580]
